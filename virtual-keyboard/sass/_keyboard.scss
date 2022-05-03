@@ -1,0 +1,15 @@
+.keyboard {
+  display: flex;
+  flex-direction: column;
+  background-color: #bdc3c7;
+  margin-top: 20px;
+  gap: 5px;
+  padding: 5px;
+  border: 3px solid #2c3e50;
+  border-radius: 10px;
+}
+
+.keyboard__row {
+  display: flex;
+  gap: 5px;
+}
