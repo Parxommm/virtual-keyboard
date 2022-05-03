@@ -1,0 +1,25 @@
+{
+  "name": "virtual-keyboard",
+  "version": "1.0.0",
+  "description": "Private repository for @parxommm",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/rolling-scopes-school/parxommm-JSFE2022Q1.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/rolling-scopes-school/parxommm-JSFE2022Q1/issues"
+  },
+  "homepage": "https://github.com/rolling-scopes-school/parxommm-JSFE2022Q1#readme",
+  "devDependencies": {
+    "eslint": "^8.14.0"
+  },
+  "dependencies": {
+    "eslint-config-airbnb-base": "^15.0.0"
+  }
+}
