@@ -32,6 +32,8 @@ h1 {
 
 .textarea {
   margin-top: 30px;
+  width: 600px;
+  height: 150px;
 }
 
 .keyboard {
@@ -71,6 +73,7 @@ h1 {
   height: 40px;
   border: none;
   color: #2c3e50;
+  font-weight: bold;
   border-radius: 5px;
   cursor: pointer;
   -webkit-box-shadow: 2px 2px 8px 0px rgba(34, 60, 80, 0.25);

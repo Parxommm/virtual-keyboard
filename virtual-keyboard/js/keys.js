@@ -1,4 +1,4 @@
-const keys = {
+const KEYS = {
   Backquote: {
     code: 'Backquote',
     en: '`',
@@ -273,6 +273,13 @@ const keys = {
     isTextKey: true,
   },
 
+  Delete: {
+    code: 'Delete',
+    en: 'Del',
+    row: 2,
+    isTextKey: false,
+  },
+
   CapsLock: {
     code: 'CapsLock',
     en: 'Caps Lock',
@@ -494,6 +501,16 @@ const keys = {
     isTextKey: true,
   },
 
+  Slash: {
+    code: 'Slash',
+    en: '/',
+    ru: '.',
+    shiftEn: '?',
+    shiftRu: ',',
+    row: 4,
+    isTextKey: true,
+  },
+
   ArrowUp: {
     code: 'ArrowUp',
     en: '&#129093;',
@@ -544,32 +561,40 @@ const keys = {
   },
 
   ArrowLeft: {
-    code: 'ArrowLeft ',
+    code: 'ArrowLeft',
     en: '&#129092;',
     row: 5,
     isTextKey: false,
   },
 
   ArrowDown: {
-    code: 'ArrowDown ',
+    code: 'ArrowDown',
     en: '&#129095;',
     row: 5,
     isTextKey: false,
   },
 
   ArrowRight: {
-    code: 'ArrowRight ',
+    code: 'ArrowRight',
     en: '&#129094;',
     row: 5,
     isTextKey: false,
   },
 
   ControlRight: {
-    code: 'ControlRight ',
-    en: 'Ctrl;',
+    code: 'ControlRight',
+    en: 'Ctrl',
     row: 5,
     isTextKey: false,
   },
 };
 
-export default keys;
+const ROW_1 = ['Backquote', 'Digit1', 'Digit2', 'Digit3', 'Digit4', 'Digit5', 'Digit6', 'Digit7', 'Digit8', 'Digit9', 'Digit0', 'Minus', 'Equal', 'Backspace'];
+const ROW_2 = ['Tab', 'KeyQ', 'KeyW', 'KeyE', 'KeyR', 'KeyT', 'KeyY', 'KeyU', 'KeyI', 'KeyO', 'KeyP', 'BracketLeft', 'BracketRight', 'Backslash', 'Delete'];
+const ROW_3 = ['CapsLock', 'KeyA', 'KeyS', 'KeyD', 'KeyF', 'KeyG', 'KeyH', 'KeyJ', 'KeyK', 'KeyL', 'Semicolon', 'Quote', 'Enter'];
+const ROW_4 = ['ShiftLeft', 'KeyZ', 'KeyX', 'KeyС', 'KeyV', 'KeyB', 'KeyN', 'KeyM', 'Comma', 'Period', 'Slash', 'ArrowUp', 'ShiftRight'];
+const ROW_5 = ['ControlLeft', 'MetaLeft', 'AltLeft', 'Space', 'AltRight', 'ArrowLeft', 'ArrowDown', 'ArrowRight', 'ControlRight'];
+
+const ROWS = [ROW_1, ROW_2, ROW_3, ROW_4, ROW_5];
+
+export { KEYS, ROWS };
