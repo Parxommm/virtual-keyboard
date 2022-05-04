@@ -1,5 +1,5 @@
-/* eslint-disable import/extensions */
-import { KEYS, ROWS } from './keys.js';
+import '../sass/style.scss';
+import { KEYS, ROWS } from './keys';
 
 function renderElement(tagHTML, parentSelector, classList, content) {
   const element = document.createElement(tagHTML);

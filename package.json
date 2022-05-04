@@ -4,7 +4,9 @@
   "description": "Private repository for @parxommm",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "SET NODE_ENV='production' && webpack",
+    "start": "webpack-dev-server"
   },
   "repository": {
     "type": "git",
@@ -17,9 +19,17 @@
   },
   "homepage": "https://github.com/rolling-scopes-school/parxommm-JSFE2022Q1#readme",
   "devDependencies": {
-    "eslint": "^8.14.0"
-  },
-  "dependencies": {
-    "eslint-config-airbnb-base": "^15.0.0"
+    "clean-webpack-plugin": "^4.0.0",
+    "css-loader": "^6.7.1",
+    "eslint": "^8.14.0",
+    "eslint-config-airbnb-base": "^15.0.0",
+    "html-webpack-plugin": "^5.5.0",
+    "node-sass": "^7.0.1",
+    "sass": "^1.51.0",
+    "sass-loader": "^12.6.0",
+    "style-loader": "^3.3.1",
+    "webpack": "^5.72.0",
+    "webpack-cli": "^4.9.2",
+    "webpack-dev-server": "^4.8.1"
   }
 }
