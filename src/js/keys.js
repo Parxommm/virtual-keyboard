@@ -431,7 +431,7 @@ const KEYS = {
     isTextKey: true,
   },
 
-  KeyС: {
+  KeyC: {
     code: 'KeyС',
     en: 'с',
     ru: 'с',
@@ -548,9 +548,12 @@ const KEYS = {
 
   Space: {
     code: 'Space',
-    en: 'Space',
-    row: 5,
-    isTextKey: false,
+    en: ' ',
+    ru: ' ',
+    shiftEn: ' ',
+    shiftRu: ' ',
+    row: 4,
+    isTextKey: true,
   },
 
   AltRight: {
@@ -592,7 +595,7 @@ const KEYS = {
 const ROW_1 = ['Backquote', 'Digit1', 'Digit2', 'Digit3', 'Digit4', 'Digit5', 'Digit6', 'Digit7', 'Digit8', 'Digit9', 'Digit0', 'Minus', 'Equal', 'Backspace'];
 const ROW_2 = ['Tab', 'KeyQ', 'KeyW', 'KeyE', 'KeyR', 'KeyT', 'KeyY', 'KeyU', 'KeyI', 'KeyO', 'KeyP', 'BracketLeft', 'BracketRight', 'Backslash', 'Delete'];
 const ROW_3 = ['CapsLock', 'KeyA', 'KeyS', 'KeyD', 'KeyF', 'KeyG', 'KeyH', 'KeyJ', 'KeyK', 'KeyL', 'Semicolon', 'Quote', 'Enter'];
-const ROW_4 = ['ShiftLeft', 'KeyZ', 'KeyX', 'KeyС', 'KeyV', 'KeyB', 'KeyN', 'KeyM', 'Comma', 'Period', 'Slash', 'ArrowUp', 'ShiftRight'];
+const ROW_4 = ['ShiftLeft', 'KeyZ', 'KeyX', 'KeyC', 'KeyV', 'KeyB', 'KeyN', 'KeyM', 'Comma', 'Period', 'Slash', 'ArrowUp', 'ShiftRight'];
 const ROW_5 = ['ControlLeft', 'MetaLeft', 'AltLeft', 'Space', 'AltRight', 'ArrowLeft', 'ArrowDown', 'ArrowRight', 'ControlRight'];
 
 const ROWS = [ROW_1, ROW_2, ROW_3, ROW_4, ROW_5];

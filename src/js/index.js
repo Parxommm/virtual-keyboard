@@ -14,6 +14,9 @@ renderElement('div', 'body', ['container']);
 renderElement('h1', '.container', ['title'], 'RSS Виртуальная клавиатура');
 renderElement('textarea', '.container', ['textarea']);
 
+const textarea = document.querySelector('textarea');
+textarea.focus();
+
 function renderKeyboardTemplate() {
   renderElement('div', '.container', ['keyboard']);
   for (let i = 0; i < 5; i += 1) {
@@ -23,8 +26,17 @@ function renderKeyboardTemplate() {
 
 renderKeyboardTemplate();
 
+let caretPosition = 0;
+
+function getCaretPosition() {
+  caretPosition = textarea.selectionStart;
+}
+
+textarea.addEventListener('click', getCaretPosition);
+
 class Key {
-  constructor(code, en) {
+  constructor(key, code, en) {
+    this.key = key;
     this.code = code;
     this.en = en;
   }
@@ -59,22 +71,58 @@ class Key {
     }
   }
 
+  addTextContent(evt) {
+    const text = textarea.value;
+    const textInKey = evt.target.textContent;
+    const keyName = this.key;
+    if (KEYS[keyName].isTextKey) {
+      textarea.value = `${text}${textInKey}`;
+    } else if (keyName === 'Backspace') {
+      getCaretPosition();
+      if (caretPosition > 0) {
+        textarea.value = text.slice(0, caretPosition - 1) + text.slice(caretPosition);
+        caretPosition -= 1;
+        textarea.selectionStart = caretPosition;
+        textarea.selectionEnd = caretPosition;
+      }
+    }
+  }
+
   render(parent) {
     const element = document.createElement('button');
     element.innerHTML = this.en;
     element.classList.add('key');
+    element.dataset.key = this.key;
     this.checkOptionallyClass(element);
     document.querySelector(parent).append(element);
+
+    element.addEventListener('click', (evt) => {
+      evt.preventDefault();
+      this.addTextContent(evt);
+      textarea.focus();
+    });
   }
 }
 
-function renderKey(obj, parent) {
+function renderKey(key, obj, parent) {
   const { code, en } = obj;
-  new Key(code, en).render(parent);
+  new Key(key, code, en).render(parent);
 }
 
 ROWS.forEach((ROW, index) => {
   ROW.forEach((key) => {
-    renderKey(KEYS[key], `.row-${index + 1}`);
+    renderKey(key, KEYS[key], `.row-${index + 1}`);
   });
+});
+
+document.addEventListener('keydown', (event) => {
+  const keyName = event.code;
+  const keyInDom = document.querySelector(`[data-key=${keyName}]`);
+  keyInDom.classList.add('key--active');
+});
+
+document.addEventListener('keyup', (event) => {
+  const keyName = event.code;
+  const keyInDom = document.querySelector(`[data-key=${keyName}]`);
+  keyInDom.classList.remove('key--active');
 });
