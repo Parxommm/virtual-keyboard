@@ -1,5 +1,5 @@
 import '../sass/style.scss';
-import { KEYS, ROWS } from './keys';
+import { KEYS, ROWS, NAV_KEYS } from './keys';
 
 function renderElement(tagHTML, parentSelector, classList, content) {
   const element = document.createElement(tagHTML);
@@ -34,6 +34,57 @@ let caretPosition = 0;
 
 function getCaretPosition() {
   caretPosition = textarea.selectionStart;
+}
+
+function changeCaretPosition(value) {
+  const text = textarea.value;
+  const { cols } = textarea;
+
+  switch (value) {
+    case 'next':
+      textarea.selectionStart = caretPosition + 1;
+      textarea.selectionEnd = caretPosition + 1;
+      break;
+    case 'prev':
+      textarea.selectionStart = caretPosition - 1;
+      textarea.selectionEnd = caretPosition - 1;
+      break;
+    case 'normal':
+      textarea.selectionStart = caretPosition;
+      textarea.selectionEnd = caretPosition;
+      break;
+    case 'start':
+      textarea.selectionStart = 0;
+      textarea.selectionEnd = 0;
+      break;
+    case 'end':
+      textarea.selectionStart = text.length;
+      textarea.selectionEnd = text.length;
+      break;
+    case 'up':
+      textarea.selectionStart = caretPosition - cols;
+      textarea.selectionEnd = caretPosition - cols;
+      break;
+    case 'down':
+      textarea.selectionStart = caretPosition + cols;
+      textarea.selectionEnd = caretPosition + cols;
+      break;
+    default:
+      break;
+  }
+}
+
+function getTextKeys() {
+  return document.querySelectorAll('[data-is-text="true"]');
+}
+
+function changeTextInKeys(lang) {
+  const textKeys = getTextKeys();
+  textKeys.forEach((elem) => {
+    const textKey = elem;
+    const textKeyName = textKey.dataset.key;
+    textKey.innerHTML = KEYS[textKeyName][lang];
+  });
 }
 
 textarea.addEventListener('click', getCaretPosition);
@@ -75,6 +126,14 @@ class Key {
     }
   }
 
+  checkTextKey(element) {
+    const { key } = this;
+    if (KEYS[key].isTextKey) {
+      // eslint-disable-next-line no-param-reassign
+      element.dataset.isText = true;
+    }
+  }
+
   changeTextContent(evt) {
     const text = textarea.value;
     const textInKey = evt.target.textContent;
@@ -83,50 +142,78 @@ class Key {
     getCaretPosition();
     if (KEYS[keyName].isTextKey) {
       textarea.value = text.slice(0, caretPosition) + textInKey + text.slice(caretPosition);
-      textarea.selectionStart = caretPosition + 1;
-      textarea.selectionEnd = caretPosition + 1;
+      changeCaretPosition('next');
     } else if (keyName === 'Backspace') {
       if (caretPosition > 0) {
         textarea.value = text.slice(0, caretPosition - 1) + text.slice(caretPosition);
-        caretPosition -= 1;
-        textarea.selectionStart = caretPosition;
-        textarea.selectionEnd = caretPosition;
+        changeCaretPosition('prev');
       }
     } else if (keyName === 'Delete') {
       if (caretPosition < text.length) {
         textarea.value = text.slice(0, caretPosition) + text.slice(caretPosition + 1);
-        textarea.selectionStart = caretPosition;
-        textarea.selectionEnd = caretPosition;
+        changeCaretPosition('normal');
       }
     } else if (keyName === 'ArrowLeft') {
       if (caretPosition > 0) {
-        textarea.selectionStart = caretPosition - 1;
-        textarea.selectionEnd = caretPosition - 1;
+        changeCaretPosition('prev');
       }
     } else if (keyName === 'ArrowRight') {
       if (caretPosition < text.length) {
-        textarea.selectionStart = caretPosition + 1;
-        textarea.selectionEnd = caretPosition + 1;
+        changeCaretPosition('next');
       }
     } else if (keyName === 'ArrowUp') {
       if (caretPosition >= cols) {
-        textarea.selectionStart = caretPosition - cols;
-        textarea.selectionEnd = caretPosition - cols;
+        changeCaretPosition('up');
       } else {
-        textarea.selectionStart = 0;
-        textarea.selectionEnd = 0;
+        changeCaretPosition('start');
       }
     } else if (keyName === 'ArrowDown') {
       if (caretPosition <= text.length - cols) {
-        textarea.selectionStart = caretPosition + cols;
-        textarea.selectionEnd = caretPosition + cols;
+        changeCaretPosition('down');
       } else {
-        textarea.selectionStart = text.length;
-        textarea.selectionEnd = text.length;
+        changeCaretPosition('end');
       }
+    } else if (keyName === 'Tab') {
+      const tab = '\t';
+      textarea.value = text.slice(0, caretPosition) + tab + text.slice(caretPosition);
+      changeCaretPosition('next');
+    } else if (keyName === 'Enter') {
+      const tab = '\n';
+      textarea.value = text.slice(0, caretPosition) + tab + text.slice(caretPosition);
+      changeCaretPosition('next');
     }
-    getCaretPosition();
-    console.log(caretPosition);
+  }
+
+  addClickEvent(element) {
+    const keyName = element.dataset.key;
+    if (KEYS[keyName].isTextKey || NAV_KEYS.includes(keyName)) {
+      const changeText = (evt) => {
+        this.changeTextContent(evt);
+        textarea.focus();
+      };
+      let isPressed = false;
+      element.addEventListener('mousedown', (evt) => {
+        element.classList.add('key--active');
+        isPressed = true;
+        const timerId = setInterval(() => {
+          changeText(evt);
+          if (isPressed === false) {
+            clearInterval(timerId);
+          }
+        }, 100);
+      });
+      element.addEventListener('mouseup', () => {
+        element.classList.remove('key--active');
+        isPressed = false;
+      });
+    } else if (keyName === 'ShiftLeft' || keyName === 'ShiftRight') {
+      element.addEventListener('mousedown', () => {
+        changeTextInKeys('shiftEn');
+      });
+      element.addEventListener('mouseup', () => {
+        changeTextInKeys('en');
+      });
+    }
   }
 
   render(parent) {
@@ -135,13 +222,9 @@ class Key {
     element.classList.add('key');
     element.dataset.key = this.key;
     this.checkOptionallyClass(element);
+    this.checkTextKey(element);
     document.querySelector(parent).append(element);
-
-    element.addEventListener('click', (evt) => {
-      evt.preventDefault();
-      this.changeTextContent(evt);
-      textarea.focus();
-    });
+    this.addClickEvent(element);
   }
 }
 
@@ -160,10 +243,23 @@ document.addEventListener('keydown', (event) => {
   const keyName = event.code;
   const keyInDom = document.querySelector(`[data-key=${keyName}]`);
   keyInDom.classList.add('key--active');
+  if (event.key === 'Tab') {
+    const tab = '\t';
+    const text = textarea.value;
+    event.preventDefault();
+    getCaretPosition();
+    textarea.value = text.slice(0, caretPosition) + tab + text.slice(caretPosition);
+    changeCaretPosition('next');
+  } else if (event.key === 'Shift') {
+    changeTextInKeys('shiftEn');
+  }
 });
 
 document.addEventListener('keyup', (event) => {
   const keyName = event.code;
   const keyInDom = document.querySelector(`[data-key=${keyName}]`);
   keyInDom.classList.remove('key--active');
+  if (event.key === 'Shift') {
+    changeTextInKeys('en');
+  }
 });
