@@ -23,8 +23,12 @@ h1 {
 }
 
 .textarea {
+  font-family: "Courier New", Courier, monospace;
+  font-size: 18px;
   margin-top: 30px;
-  width: 600px;
+  padding: 0;
+  border: none;
+  width: 10ch;
   height: 150px;
   outline: none;
 }

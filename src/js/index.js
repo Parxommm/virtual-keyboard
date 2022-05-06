@@ -7,6 +7,10 @@ function renderElement(tagHTML, parentSelector, classList, content) {
   if (content) {
     element.textContent = content;
   }
+  if (tagHTML === 'textarea') {
+    element.wrap = 'hard';
+    element.cols = 10;
+  }
   document.querySelector(parentSelector).append(element);
 }
 
@@ -71,21 +75,58 @@ class Key {
     }
   }
 
-  addTextContent(evt) {
+  changeTextContent(evt) {
     const text = textarea.value;
     const textInKey = evt.target.textContent;
     const keyName = this.key;
+    const { cols } = textarea;
+    getCaretPosition();
     if (KEYS[keyName].isTextKey) {
-      textarea.value = `${text}${textInKey}`;
+      textarea.value = text.slice(0, caretPosition) + textInKey + text.slice(caretPosition);
+      textarea.selectionStart = caretPosition + 1;
+      textarea.selectionEnd = caretPosition + 1;
     } else if (keyName === 'Backspace') {
-      getCaretPosition();
       if (caretPosition > 0) {
         textarea.value = text.slice(0, caretPosition - 1) + text.slice(caretPosition);
         caretPosition -= 1;
         textarea.selectionStart = caretPosition;
         textarea.selectionEnd = caretPosition;
       }
+    } else if (keyName === 'Delete') {
+      if (caretPosition < text.length) {
+        textarea.value = text.slice(0, caretPosition) + text.slice(caretPosition + 1);
+        textarea.selectionStart = caretPosition;
+        textarea.selectionEnd = caretPosition;
+      }
+    } else if (keyName === 'ArrowLeft') {
+      if (caretPosition > 0) {
+        textarea.selectionStart = caretPosition - 1;
+        textarea.selectionEnd = caretPosition - 1;
+      }
+    } else if (keyName === 'ArrowRight') {
+      if (caretPosition < text.length) {
+        textarea.selectionStart = caretPosition + 1;
+        textarea.selectionEnd = caretPosition + 1;
+      }
+    } else if (keyName === 'ArrowUp') {
+      if (caretPosition >= cols) {
+        textarea.selectionStart = caretPosition - cols;
+        textarea.selectionEnd = caretPosition - cols;
+      } else {
+        textarea.selectionStart = 0;
+        textarea.selectionEnd = 0;
+      }
+    } else if (keyName === 'ArrowDown') {
+      if (caretPosition <= text.length - cols) {
+        textarea.selectionStart = caretPosition + cols;
+        textarea.selectionEnd = caretPosition + cols;
+      } else {
+        textarea.selectionStart = text.length;
+        textarea.selectionEnd = text.length;
+      }
     }
+    getCaretPosition();
+    console.log(caretPosition);
   }
 
   render(parent) {
@@ -98,7 +139,7 @@ class Key {
 
     element.addEventListener('click', (evt) => {
       evt.preventDefault();
-      this.addTextContent(evt);
+      this.changeTextContent(evt);
       textarea.focus();
     });
   }
