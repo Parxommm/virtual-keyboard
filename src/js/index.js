@@ -15,7 +15,7 @@ function renderElement(tagHTML, parentSelector, classList, content) {
   }
   if (tagHTML === 'textarea') {
     element.wrap = 'hard';
-    element.cols = 10;
+    element.cols = 60;
   }
   document.querySelector(parentSelector).append(element);
 }

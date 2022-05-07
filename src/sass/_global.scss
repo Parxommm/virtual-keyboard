@@ -1,17 +1,16 @@
 * {
+  font-family: "Verdana", Geneva, sans-serif;
   box-sizing: border-box;
 }
 
 body {
-  background: radial-gradient(circle, rgba(40,48,72,1) 0%, rgba(133,147,152,1) 100%);
-  background-repeat: no-repeat;
-  background-size: 100% 100%;
-  height: 100vh;
+  background-color: #f1faee;
 }
 
 h1 {
   margin: 0;
-  color: #bdc3c7;
+  color: #457b9d;
+  font-size: 24px;
 }
 
 .container {
@@ -25,17 +24,23 @@ h1 {
 .textarea {
   font-family: "Courier New", Courier, monospace;
   font-size: 18px;
+  color: #1d3557;
+  font-weight: 700;
   margin-top: 30px;
   padding: 0;
   border: none;
-  width: 10ch;
+  width: 62ch;
+  padding: 1ch;
   height: 150px;
   outline: none;
   resize: none;
+  box-shadow: -5px -5px 10px 0px rgba(29, 53, 87, 0.2);
+  background-color: #a8dadc;
+  border-radius: 5px;
 }
 
 .info {
-  color: #bdc3c7;
-  font-size: 18px;
+  color: #457b9d;
+  font-size: 14px;
   margin-top: 10px;
 }
