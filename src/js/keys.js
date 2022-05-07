@@ -600,6 +600,6 @@ const ROW_5 = ['ControlLeft', 'MetaLeft', 'AltLeft', 'Space', 'AltRight', 'Arrow
 
 const ROWS = [ROW_1, ROW_2, ROW_3, ROW_4, ROW_5];
 
-const NAV_KEYS = ['Backspace', 'Delete', 'Enter', 'ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown'];
+const NAV_KEYS = ['Tab', 'Backspace', 'Delete', 'Enter', 'ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown'];
 
 export { KEYS, ROWS, NAV_KEYS };

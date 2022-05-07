@@ -1,11 +1,17 @@
 import '../sass/style.scss';
 import { KEYS, ROWS, NAV_KEYS } from './keys';
 
+let currentLang = 'en';
+if (localStorage.getItem('lang')) {
+  currentLang = localStorage.getItem('lang');
+}
+let isCapsLock = false;
+
 function renderElement(tagHTML, parentSelector, classList, content) {
   const element = document.createElement(tagHTML);
   element.classList.add(...classList);
   if (content) {
-    element.textContent = content;
+    element.innerHTML = content;
   }
   if (tagHTML === 'textarea') {
     element.wrap = 'hard';
@@ -85,6 +91,35 @@ function changeTextInKeys(lang) {
     const textKeyName = textKey.dataset.key;
     textKey.innerHTML = KEYS[textKeyName][lang];
   });
+}
+
+function keysToUpperCase(value) {
+  const textKeys = getTextKeys();
+  textKeys.forEach((elem) => {
+    const textKey = elem;
+    const text = textKey.textContent;
+    if (value) {
+      textKey.innerHTML = text.toUpperCase();
+    } else {
+      textKey.innerHTML = text.toLowerCase();
+    }
+  });
+}
+
+function changeTextOnShift(value) {
+  if (value === 'on') {
+    if (currentLang === 'en') {
+      changeTextInKeys('shiftEn');
+    } else {
+      changeTextInKeys('shiftRu');
+    }
+  } else if (value === 'off') {
+    if (currentLang === 'en') {
+      changeTextInKeys('en');
+    } else {
+      changeTextInKeys('ru');
+    }
+  }
 }
 
 textarea.addEventListener('click', getCaretPosition);
@@ -208,10 +243,22 @@ class Key {
       });
     } else if (keyName === 'ShiftLeft' || keyName === 'ShiftRight') {
       element.addEventListener('mousedown', () => {
-        changeTextInKeys('shiftEn');
+        changeTextOnShift('on');
       });
       element.addEventListener('mouseup', () => {
-        changeTextInKeys('en');
+        changeTextOnShift('off');
+      });
+    } else if (keyName === 'CapsLock') {
+      element.addEventListener('click', (evt) => {
+        if (!isCapsLock) {
+          keysToUpperCase(true);
+          evt.target.classList.add('key--active');
+          isCapsLock = true;
+        } else {
+          keysToUpperCase(false);
+          evt.target.classList.remove('key--active');
+          isCapsLock = false;
+        }
       });
     }
   }
@@ -239,6 +286,8 @@ ROWS.forEach((ROW, index) => {
   });
 });
 
+renderElement('span', '.container', ['info'], 'Клавиатура создана в операционной системе Windows.<br>Для переключения языка комбинация: левыe ctrl + alt');
+
 document.addEventListener('keydown', (event) => {
   const keyName = event.code;
   const keyInDom = document.querySelector(`[data-key=${keyName}]`);
@@ -251,15 +300,71 @@ document.addEventListener('keydown', (event) => {
     textarea.value = text.slice(0, caretPosition) + tab + text.slice(caretPosition);
     changeCaretPosition('next');
   } else if (event.key === 'Shift') {
-    changeTextInKeys('shiftEn');
+    changeTextOnShift('on');
+  } else if (event.key === 'CapsLock') {
+    if (isCapsLock === false) {
+      isCapsLock = true;
+      keysToUpperCase(true);
+      keyInDom.classList.add('key--active');
+    } else {
+      isCapsLock = false;
+      keysToUpperCase(false);
+      keyInDom.classList.remove('key--active');
+    }
+  } else if (KEYS[keyName].isTextKey) {
+    event.preventDefault();
+    const text = textarea.value;
+    let textInKey = KEYS[keyName][currentLang];
+    if (isCapsLock) {
+      textInKey = textInKey.toUpperCase();
+    }
+    getCaretPosition();
+    textarea.value = text.slice(0, caretPosition) + textInKey + text.slice(caretPosition);
+    changeCaretPosition('next');
   }
 });
 
 document.addEventListener('keyup', (event) => {
   const keyName = event.code;
   const keyInDom = document.querySelector(`[data-key=${keyName}]`);
-  keyInDom.classList.remove('key--active');
+  if (keyName !== 'CapsLock') {
+    keyInDom.classList.remove('key--active');
+  }
   if (event.key === 'Shift') {
-    changeTextInKeys('en');
+    changeTextOnShift('off');
   }
 });
+
+function runOnKeys(func, ...codes) {
+  const pressed = new Set();
+  document.addEventListener('keydown', (event) => {
+    pressed.add(event.code);
+    for (let i = 0; i < codes.length; i += 1) {
+      if (!pressed.has(codes[i])) {
+        return;
+      }
+    }
+    pressed.clear();
+    func();
+  });
+
+  document.addEventListener('keyup', (event) => {
+    pressed.delete(event.code);
+  });
+}
+
+function changeLang() {
+  if (currentLang === 'en') {
+    changeTextInKeys('ru');
+    currentLang = 'ru';
+  } else {
+    changeTextInKeys('en');
+    currentLang = 'en';
+  }
+
+  localStorage.setItem('lang', currentLang);
+}
+
+runOnKeys(changeLang, 'ControlLeft', 'AltLeft');
+
+changeTextInKeys(currentLang);
