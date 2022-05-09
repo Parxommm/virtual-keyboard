@@ -300,6 +300,7 @@ document.addEventListener('keydown', (event) => {
     textarea.value = text.slice(0, caretPosition) + tab + text.slice(caretPosition);
     changeCaretPosition('next');
   } else if (event.key === 'Shift') {
+    isCapsLock = true;
     changeTextOnShift('on');
   } else if (event.key === 'CapsLock') {
     if (isCapsLock === false) {
@@ -331,6 +332,7 @@ document.addEventListener('keyup', (event) => {
     keyInDom.classList.remove('key--active');
   }
   if (event.key === 'Shift') {
+    isCapsLock = false;
     changeTextOnShift('off');
   }
 });
